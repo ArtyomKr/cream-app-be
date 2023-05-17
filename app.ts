@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Request, Response, Application } from 'express';
 
-const app = express();
-const port = 3000;
+const app: Application = express();
+const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
