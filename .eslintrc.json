@@ -17,8 +17,17 @@
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
+  "ignorePatterns": [
+    "dist"
+  ],
   "rules": {
     "node/no-unsupported-features/es-syntax": "off",
-    "@typescript-eslint/consistent-type-definitions": "warn"
+    "@typescript-eslint/consistent-type-definitions": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   }
 }
