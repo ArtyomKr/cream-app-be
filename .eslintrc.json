@@ -22,12 +22,6 @@
   ],
   "rules": {
     "node/no-unsupported-features/es-syntax": "off",
-    "@typescript-eslint/consistent-type-definitions": "warn",
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ]
+    "@typescript-eslint/consistent-type-definitions": "warn"
   }
 }
