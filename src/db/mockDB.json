@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": 0,
+      "name": "MockUser",
+      "login": "MockUser"
+    },
+    {
+      "id": 1,
+      "name": "MockUser1",
+      "login": "MockUser1"
+    },
+    {
+      "id": 2,
+      "name": "MockUser2",
+      "login": "MockUser2"
+    }
+  ]
+}
