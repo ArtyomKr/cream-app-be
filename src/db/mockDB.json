@@ -3,17 +3,31 @@
     {
       "id": 0,
       "name": "MockUser",
-      "login": "MockUser"
-    },
-    {
-      "id": 1,
-      "name": "MockUser1",
-      "login": "MockUser1"
-    },
-    {
-      "id": 2,
-      "name": "MockUser2",
-      "login": "MockUser2"
+      "login": "MockUser",
+      "boards": [
+        {
+          "id": 0,
+          "title": "Board1",
+          "description": "First Board",
+          "columns": [
+            {
+              "id": 0,
+              "title": "Column1",
+              "order": 0,
+              "tasks": [
+                {
+                  "id": 0,
+                  "title": "Task",
+                  "order": 0,
+                  "description": "First task",
+                  "userId": 0,
+                  "files": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
