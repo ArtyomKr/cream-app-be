@@ -22,6 +22,17 @@
   ],
   "rules": {
     "node/no-unsupported-features/es-syntax": "off",
-    "@typescript-eslint/consistent-type-definitions": "warn"
+    "@typescript-eslint/consistent-type-definitions": "warn",
+    "node/no-missing-import": [
+      "error",
+      {
+        "tryExtensions": [
+          ".js",
+          ".json",
+          ".node",
+          ".ts"
+        ]
+      }
+    ]
   }
 }
