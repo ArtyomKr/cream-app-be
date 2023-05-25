@@ -1,12 +1,7 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import dbQuery from './db';
-import usersRouter from './routers/users';
-import loginRouter from './routers/login';
-import boardsRouter from './routers/boards';
-import columnsRouter from './routers/columns';
-import tasksRouter from './routers/tasks';
-import fileRouter from './routers/file';
+import { usersRouter, loginRouter, boardsRouter, columnsRouter, tasksRouter, fileRouter } from './routers';
 
 dotenv.config();
 
