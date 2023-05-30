@@ -50,7 +50,6 @@ const createTables = async () => {
        PRIMARY KEY ("fileId")
      );`,
   );
-  console.log(res);
 };
 
 export { dbQuery, createTables };

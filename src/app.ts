@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import { dbQuery, createTables } from './db';
-import { usersRouter, loginRouter, boardsRouter, columnsRouter, tasksRouter, fileRouter } from './routers';
+import { usersRouter, authRouter, boardsRouter, columnsRouter, tasksRouter, fileRouter } from './routers';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ app.get('/', async (req, res) => {
 });
 
 app.use(usersRouter);
-app.use(loginRouter);
+app.use(authRouter);
 app.use(boardsRouter);
 app.use(columnsRouter);
 app.use(tasksRouter);
