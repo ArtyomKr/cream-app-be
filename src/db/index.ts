@@ -4,8 +4,8 @@ const pool = new Pool({ ssl: true });
 
 const dbQuery = (text: string, params?: string[]) => pool.query(text, params);
 
-const createTables = async () => {
-  const res = await dbQuery(
+const createTables = async () =>
+  dbQuery(
     `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
      CREATE TABLE IF NOT EXISTS "users" (
        "id" uuid DEFAULT uuid_generate_v4(), 
@@ -50,6 +50,7 @@ const createTables = async () => {
        PRIMARY KEY ("fileId")
      );`,
   );
-};
 
-export { dbQuery, createTables };
+const createUser = async () => dbQuery(``);
+
+export { dbQuery, createTables, createUser };
