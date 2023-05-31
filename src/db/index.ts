@@ -2,15 +2,15 @@ import { Pool } from 'pg';
 
 const pool = new Pool({ ssl: true });
 
-const dbQuery = (text: string, params?: string[]) => pool.query(text, params);
+const dbQuery = (text: string, params?: string[]) => pool.query(text, params ?? []);
 
 const createTables = async () =>
   dbQuery(
     `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
      CREATE TABLE IF NOT EXISTS "users" (
        "id" uuid DEFAULT uuid_generate_v4(), 
-       "name" VARCHAR (25) NOT NULL, 
-       "login" VARCHAR (25) UNIQUE NOT NULL, 
+       "name" VARCHAR (50) NOT NULL, 
+       "login" VARCHAR (50) UNIQUE NOT NULL, 
        "password" VARCHAR (25) NOT NULL,
        PRIMARY KEY ("id")
      );
@@ -51,6 +51,15 @@ const createTables = async () =>
      );`,
   );
 
-const createUser = async () => dbQuery(``);
+const createUser = async (name: string, login: string, password: string) => {
+  const res = await dbQuery(
+    `INSERT INTO users (name, login, password)
+        VALUES ($1, $2, $3)
+        RETURNING id, name, login`,
+    [name, login, password],
+  );
+
+  return res.rows[0];
+};
 
 export { dbQuery, createTables, createUser };
