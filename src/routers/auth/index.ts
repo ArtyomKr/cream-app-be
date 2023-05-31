@@ -15,15 +15,20 @@ function isSignupBody(body: object): body is ISignUpRequest {
   );
 }
 
-authRouter.post('/signup', (req, res) => {
+authRouter.post('/signup', async (req, res) => {
   if (!isSignupBody(req.body)) {
-    res.status(400).send({ error: 'Invalid request body' });
+    res.status(400).json({ error: 'Invalid request body' });
   }
 
   const { name, login, password } = req.body;
-  createUser();
 
-  res.status(201).send();
+  try {
+    const newUser = await createUser(name, login, password);
+    res.status(201).json(newUser);
+  } catch (err) {
+    const message = typeof err === 'object' && err !== null && 'message' in err ? err.message : 'unknown error occured';
+    res.status(400).json(message);
+  }
 });
 
 authRouter.get('/signin', (req, res) => {
