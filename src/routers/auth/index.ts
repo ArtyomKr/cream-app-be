@@ -1,23 +1,15 @@
 import express, { Request, Response } from 'express';
 import { ISignUpRequest, ISignUpResponse } from '../../models/apiModels';
-import { createUser } from '../../db';
+import { isSigninBody, isSignupBody } from './typeguards';
+import { createUser, findUser } from '../../db';
+import errorConstructor from '../../utils/errorConstructor';
 
 const authRouter = express.Router();
 
-function isSignupBody(body: object): body is ISignUpRequest {
-  return (
-    'name' in body &&
-    'login' in body &&
-    'password' in body &&
-    typeof body.name === 'string' &&
-    typeof body.login === 'string' &&
-    typeof body.password === 'string'
-  );
-}
-
 authRouter.post('/signup', async (req, res) => {
   if (!isSignupBody(req.body)) {
-    res.status(400).json({ error: 'Invalid request body' });
+    const status = 400;
+    res.status(status).json(errorConstructor({ status, message: 'Invalid request body' }));
   }
 
   const { name, login, password } = req.body;
@@ -26,13 +18,32 @@ authRouter.post('/signup', async (req, res) => {
     const newUser = await createUser(name, login, password);
     res.status(201).json(newUser);
   } catch (err) {
-    const message = typeof err === 'object' && err !== null && 'message' in err ? err.message : 'unknown error occured';
-    res.status(400).json(message);
+    const status = 400;
+    const wrappedError = errorConstructor({ status, err });
+    res.status(status).json(wrappedError);
   }
 });
 
-authRouter.get('/signin', (req, res) => {
-  res.send('Signin functionality will be here');
+authRouter.post('/signin', async (req, res) => {
+  if (!isSigninBody(req.body)) {
+    const status = 400;
+    res.status(status).json(errorConstructor({ status, message: 'Invalid request body' }));
+  }
+
+  const { login, password } = req.body;
+  // TODO
+  try {
+    const user = await findUser(login);
+    if (!user) {
+      const status = 403;
+      res.status(status).send(errorConstructor({ status, message: 'User not found' }));
+    }
+    res.status(201).json(user);
+  } catch (err) {
+    const status = 400;
+    const wrappedError = errorConstructor({ status, err });
+    res.status(status).json(wrappedError);
+  }
 });
 
 export default authRouter;
