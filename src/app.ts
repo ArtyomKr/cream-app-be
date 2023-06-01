@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import { dbQuery, createTables } from './db';
 import { usersRouter, authRouter, boardsRouter, columnsRouter, tasksRouter, fileRouter } from './routers';
@@ -11,6 +12,7 @@ const port = process.env.PORT || 3000;
 
 createTables();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(usersRouter);
