@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import { ISignUpRequest } from '../models/apiModels';
 
 const pool = new Pool({ ssl: true });
 
@@ -51,7 +52,7 @@ const createTables = async () =>
      );`,
   );
 
-const createUser = async (name: string, login: string, password: string) => {
+const createUser = async (name: string, login: string, password: string): Promise<ISignUpRequest> => {
   const res = await dbQuery(
     `INSERT INTO users (name, login, password)
         VALUES ($1, $2, $3)
@@ -62,7 +63,7 @@ const createUser = async (name: string, login: string, password: string) => {
   return res.rows[0];
 };
 
-const findUser = async (login: string) => {
+const findUser = async (login: string): Promise<{ id: string; password: string }> => {
   const res = await dbQuery(
     `SELECT id, password
         FROM users
