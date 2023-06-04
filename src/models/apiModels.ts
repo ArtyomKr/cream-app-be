@@ -4,7 +4,7 @@ interface ISignUpRequest {
   password: string;
 }
 
-type ISignUpResponse = Omit<IUserData, 'boards'>;
+type ISignUpResponse = IUserData;
 
 interface ISignInRequest {
   login: string;
@@ -19,7 +19,6 @@ interface IUserData {
   id: string;
   name: string;
   login: string;
-  boards: IBoardData[];
 }
 
 interface ITask {
@@ -65,4 +64,4 @@ interface IDBModel {
   users: IUserData[];
 }
 
-export type { ISignUpRequest, ISignUpResponse, ISignInRequest, ISignInResponse, IDBModel };
+export type { ISignUpRequest, ISignUpResponse, ISignInRequest, ISignInResponse, IDBModel, IUserData };
