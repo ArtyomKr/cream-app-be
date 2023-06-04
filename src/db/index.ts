@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { ISignUpRequest } from '../models/apiModels';
+import { ISignUpRequest, IUserData } from '../models/apiModels';
 
 const pool = new Pool({ ssl: true });
 
@@ -63,7 +63,7 @@ const createUser = async (name: string, login: string, password: string): Promis
   return res.rows[0];
 };
 
-const findUser = async (login: string): Promise<{ id: string; password: string }> => {
+const findUserByLogin = async (login: string): Promise<{ id: string; password: string }> => {
   const res = await dbQuery(
     `SELECT id, password
         FROM users
@@ -74,4 +74,33 @@ const findUser = async (login: string): Promise<{ id: string; password: string }
   return res.rows[0];
 };
 
-export { dbQuery, createTables, createUser, findUser };
+const findUserById = async (id: string): Promise<IUserData> => {
+  const res = await dbQuery(
+    `SELECT id, name, login
+        FROM users
+        WHERE id = $1;`,
+    [id],
+  );
+
+  return res.rows[0];
+};
+
+const getAllUsers = async (): Promise<IUserData[]> => {
+  const res = await dbQuery(
+    `SELECT id, name, login
+        FROM users;`,
+  );
+
+  return res.rows;
+};
+
+const deleteUser = async (id: string) => {
+  await dbQuery(
+    `DELETE
+        FROM users
+        WHERE id = $1;`,
+    [id],
+  );
+};
+
+export { dbQuery, createTables, createUser, findUserByLogin, findUserById, getAllUsers, deleteUser };
