@@ -4,8 +4,6 @@ interface ISignUpRequest {
   password: string;
 }
 
-type ISignUpResponse = IUserData;
-
 interface ISignInRequest {
   login: string;
   password: string;
@@ -64,4 +62,4 @@ interface IDBModel {
   users: IUserData[];
 }
 
-export type { ISignUpRequest, ISignUpResponse, ISignInRequest, ISignInResponse, IDBModel, IUserData };
+export type { ISignUpRequest, ISignInRequest, ISignInResponse, IDBModel, IUserData };

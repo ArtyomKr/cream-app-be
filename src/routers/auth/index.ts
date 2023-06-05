@@ -1,5 +1,5 @@
 import express from 'express';
-import { isSigninBody, isSignupBody } from './typeguards';
+import { isSigninBody, isSignupBody } from './typeGuards';
 import { createUser, findUserByLogin } from '../../db';
 import errorConstructor from '../../utils/errorConstructor';
 import generateToken from '../../utils/generateToken';
