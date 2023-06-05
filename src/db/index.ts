@@ -103,4 +103,18 @@ const deleteUser = async (id: string) => {
   );
 };
 
-export { dbQuery, createTables, createUser, findUserByLogin, findUserById, getAllUsers, deleteUser };
+const editUser = async (id: string, { name, login, password }: ISignUpRequest): Promise<ISignUpRequest> => {
+  const res = await dbQuery(
+    `UPDATE users
+        SET name = $2,
+            login = $3,
+            password = $4
+        WHERE id = $1
+        RETURNING name, login, password;`,
+    [id, name, login, password],
+  );
+
+  return res.rows[0];
+};
+
+export { dbQuery, createTables, createUser, findUserByLogin, findUserById, getAllUsers, deleteUser, editUser };
