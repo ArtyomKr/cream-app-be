@@ -48,13 +48,16 @@ interface IColumnData extends IColumn {
   tasks: IColumnTask[];
 }
 
-interface IBoard {
-  id: string;
+interface IBoardRequest {
   title: string;
-  description: string;
+  description?: string;
 }
 
-interface IBoardData extends IBoard {
+interface IBoardResponse extends Required<IBoardRequest> {
+  id: string;
+}
+
+interface IBoardData extends IBoardResponse {
   columns: IColumnData[];
 }
 
@@ -62,4 +65,4 @@ interface IDBModel {
   users: IUserData[];
 }
 
-export type { ISignUpRequest, ISignInRequest, ISignInResponse, IDBModel, IUserData };
+export type { ISignUpRequest, ISignInRequest, ISignInResponse, IDBModel, IUserData, IBoardRequest, IBoardResponse };
