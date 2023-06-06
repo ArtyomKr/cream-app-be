@@ -21,8 +21,7 @@ authRouter.post('/signup', async (req, res) => {
     res.status(201).json(newUser);
   } catch (err) {
     const status = 400;
-    const wrappedError = errorConstructor({ status, err });
-    res.status(status).json(wrappedError);
+    res.status(status).json(errorConstructor({ status, err }));
   }
 });
 
@@ -44,8 +43,7 @@ authRouter.post('/signin', async (req, res) => {
     } else res.status(200).json(generateToken(user.id, login));
   } catch (err) {
     const status = 400;
-    const wrappedError = errorConstructor({ status, err });
-    res.status(status).json(wrappedError);
+    res.status(status).json(errorConstructor({ status, err }));
   }
 });
 
