@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { ISignUpRequest, IUserData } from '../models/apiModels';
+import { ISignUpRequest, IUserData, IBoardResponse } from '../models/apiModels';
 
 const pool = new Pool({ ssl: true });
 
@@ -117,4 +117,25 @@ const editUser = async (id: string, { name, login, password }: ISignUpRequest): 
   return res.rows[0];
 };
 
-export { dbQuery, createTables, createUser, findUserByLogin, findUserById, getAllUsers, deleteUser, editUser };
+const createBoard = async (title: string, description: string): Promise<IBoardResponse> => {
+  const res = await dbQuery(
+    `INSERT INTO boards (title, description)
+         VALUES ($1, $2)
+         RETURNING *;`,
+    [title, description],
+  );
+
+  return res.rows[0];
+};
+
+export {
+  dbQuery,
+  createTables,
+  createUser,
+  findUserByLogin,
+  findUserById,
+  getAllUsers,
+  deleteUser,
+  editUser,
+  createBoard,
+};
