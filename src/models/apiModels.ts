@@ -53,7 +53,7 @@ interface IBoardRequest {
   description?: string;
 }
 
-interface IBoardResponse extends Required<IBoardRequest> {
+interface IBoardResponse extends IBoardRequest {
   id: string;
 }
 
@@ -65,4 +65,13 @@ interface IDBModel {
   users: IUserData[];
 }
 
-export type { ISignUpRequest, ISignInRequest, ISignInResponse, IDBModel, IUserData, IBoardRequest, IBoardResponse };
+export type {
+  ISignUpRequest,
+  ISignInRequest,
+  ISignInResponse,
+  IDBModel,
+  IUserData,
+  IBoardRequest,
+  IBoardResponse,
+  IBoardData,
+};
