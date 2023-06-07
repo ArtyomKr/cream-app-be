@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { ISignUpRequest, IUserData, IBoardResponse } from '../models/apiModels';
+import { ISignUpRequest, IUserData, IBoardResponse, IBoardData } from '../models/apiModels';
 
 const pool = new Pool({ ssl: true });
 
@@ -128,6 +128,28 @@ const createBoard = async (title: string, description: string): Promise<IBoardRe
   return res.rows[0];
 };
 
+const getAllBoards = async (): Promise<IBoardResponse[]> => {
+  const res = await dbQuery(
+    `SELECT *
+         FROM boards;`,
+  );
+
+  return res.rows;
+};
+
+const findBoardById = async (id: string): Promise<IBoardData[]> => {
+  const res = await dbQuery(
+    `SELECT b.*, c.*
+         FROM boards b
+         LEFT JOIN columns c
+         ON (b.id = c."boardId")
+         WHERE b.id = $1;`,
+    [id],
+  );
+
+  return res.rows[0];
+};
+
 export {
   dbQuery,
   createTables,
@@ -138,4 +160,6 @@ export {
   deleteUser,
   editUser,
   createBoard,
+  getAllBoards,
+  findBoardById,
 };

@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../../middleware/auth';
 import isBoardRequestBody from './typeGuards';
 import errorConstructor from '../../utils/errorConstructor';
-import { createBoard } from '../../db';
+import { createBoard, findBoardById, getAllBoards } from '../../db';
 
 const boardsRouter = express.Router();
 
@@ -17,7 +17,35 @@ boardsRouter.post('/boards', auth, async (req, res) => {
 
   try {
     const newBoard = await createBoard(title, description);
+
     res.status(201).json(newBoard);
+  } catch (err) {
+    const status = 400;
+    res.status(status).json(errorConstructor({ status, err }));
+  }
+});
+
+boardsRouter.get('/boards', auth, async (req, res) => {
+  try {
+    const boards = await getAllBoards();
+
+    res.status(201).json(boards);
+  } catch (err) {
+    const status = 400;
+    res.status(status).json(errorConstructor({ status, err }));
+  }
+});
+
+boardsRouter.get('/boards/:id', auth, async (req, res) => {
+  try {
+    const board = await findBoardById(req.params.id);
+
+    if (!board) {
+      const status = 404;
+      res.status(status).json(errorConstructor({ status, message: 'Board was not found' }));
+      return;
+    }
+    res.status(200).json(board);
   } catch (err) {
     const status = 400;
     res.status(status).json(errorConstructor({ status, err }));
