@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { ISignUpRequest, IUserData, IBoardResponse, IBoardData } from '../models/apiModels';
+import { ISignUpRequest, IUserData, IBoardResponse, IBoardData, IBoardRequest } from '../models/apiModels';
 
 const pool = new Pool({ ssl: true });
 
@@ -136,15 +136,36 @@ const getAllBoards = async (): Promise<IBoardResponse[]> => {
 
   return res.rows;
 };
-
+// TODO
 const findBoardById = async (id: string): Promise<IBoardData[]> => {
   const res = await dbQuery(
-    `SELECT b.*, c.*
+    `SELECT b.*, to_jsonb(c.*) - 'boardId' columns
          FROM boards b
-         LEFT JOIN columns c
-         ON (b.id = c."boardId")
+         LEFT JOIN columns c ON (b.id = c."boardId")
          WHERE b.id = $1;`,
     [id],
+  );
+
+  return res.rows[0];
+};
+
+const deleteBoard = async (id: string) => {
+  await dbQuery(
+    `DELETE
+        FROM boards
+        WHERE id = $1;`,
+    [id],
+  );
+};
+
+const editBoard = async (id: string, { title, description }: IBoardRequest): Promise<IBoardResponse> => {
+  const res = await dbQuery(
+    `UPDATE boards
+        SET title = $2,
+            description = $3
+        WHERE id = $1
+        RETURNING *;`,
+    [id, title, description ?? ''],
   );
 
   return res.rows[0];
@@ -162,4 +183,6 @@ export {
   createBoard,
   getAllBoards,
   findBoardById,
+  deleteBoard,
+  editBoard,
 };
