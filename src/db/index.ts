@@ -1,5 +1,13 @@
 import { Pool } from 'pg';
-import { ISignUpRequest, IUserData, IBoardResponse, IBoardData, IBoardRequest } from '../models/apiModels';
+import {
+  ISignUpRequest,
+  IUserData,
+  IBoardResponse,
+  IBoardData,
+  IBoardRequest,
+  IColumn,
+  IColumnData,
+} from '../models/apiModels';
 
 const pool = new Pool({ ssl: true });
 
@@ -171,6 +179,41 @@ const editBoard = async (id: string, { title, description }: IBoardRequest): Pro
   return res.rows[0];
 };
 
+const createColumn = async (boardId: string, title: string, order: number): Promise<IColumn> => {
+  const res = await dbQuery(
+    `INSERT INTO columns ("boardId", title, "order")
+         VALUES ($1, $2, $3)
+         RETURNING id, title, "order";`,
+    [boardId, title, order.toString()],
+  );
+
+  return res.rows[0];
+};
+
+const getAllColumns = async (boardId: string): Promise<IColumn[]> => {
+  const res = await dbQuery(
+    `SELECT id, title, "order"
+         FROM columns
+         WHERE "boardId" = $1;`,
+    [boardId],
+  );
+
+  return res.rows;
+};
+
+const findColumnById = async (boardId: string, columnId: string): Promise<IColumnData> => {
+  const res = await dbQuery(
+    `SELECT c.*, json_agg(to_jsonb(t.*) - 'boardId' - 'columnId') tasks
+         FROM columns c
+         LEFT JOIN tasks t ON (c.id = t."columnId")
+         WHERE c."boardId" = $1 and c.id = $2
+         GROUP BY c.id;`,
+    [boardId, columnId],
+  );
+
+  return res.rows[0];
+};
+
 export {
   dbQuery,
   createTables,
@@ -185,4 +228,7 @@ export {
   findBoardById,
   deleteBoard,
   editBoard,
+  createColumn,
+  getAllColumns,
+  findColumnById,
 };

@@ -74,4 +74,6 @@ export type {
   IBoardRequest,
   IBoardResponse,
   IBoardData,
+  IColumn,
+  IColumnData,
 };
