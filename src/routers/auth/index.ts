@@ -40,7 +40,7 @@ authRouter.post('/signin', async (req, res) => {
     if (!user || password !== user.password) {
       const status = 403;
       res.status(status).send(errorConstructor({ status, message: 'User not found' }));
-    } else res.status(200).json(generateToken(user.id, login));
+    } else res.status(200).json({ token: generateToken(user.id, login) });
   } catch (err) {
     const status = 400;
     res.status(status).json(errorConstructor({ status, err }));
