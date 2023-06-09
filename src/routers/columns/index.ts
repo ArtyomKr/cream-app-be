@@ -25,9 +25,9 @@ columnsRouter.post('/boards/:id/columns', auth, async (req, res) => {
   }
 });
 
-columnsRouter.get('/boards/:id/columns', auth, async (req, res) => {
+columnsRouter.get('/boards/:boardId/columns', auth, async (req, res) => {
   try {
-    const columns = await getAllColumns(req.params.id);
+    const columns = await getAllColumns(req.params.boardId);
 
     res.status(201).json(columns);
   } catch (err) {
