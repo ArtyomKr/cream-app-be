@@ -147,12 +147,28 @@ const getAllBoards = async (): Promise<IBoardResponse[]> => {
   return res.rows;
 };
 // TODO
-const findBoardById = async (id: string): Promise<IBoardData[]> => {
+const findBoardById = async (id: string): Promise<IBoardData> => {
   const res = await dbQuery(
-    `SELECT b.*, to_jsonb(c.*) - 'boardId' columns
+    `WITH column_tasks as (
+     SELECT "columnId",
+            json_agg(to_jsonb(t.*) - 'boardId' - 'columnId' || jsonb_build_object('files', coalesce(f.files, '[]'))) tasks
+     FROM tasks t
+     LEFT JOIN (
+         SELECT "taskId", json_agg(to_jsonb(f.*) - 'fileId' - 'taskId') files
+         FROM files f
+         GROUP BY "taskId"
+       ) f ON (t.id = f."taskId")
+     GROUP BY "columnId"
+     )
+
+     SELECT b.*, 
+           CASE WHEN count(c) = 0 THEN '[]' 
+           ELSE json_agg(to_jsonb(c.*) - 'boardId' || jsonb_build_object('tasks', coalesce(t.tasks, '[]')))  END  columns 
      FROM boards b
      LEFT JOIN columns c ON (b.id = c."boardId")
-     WHERE b.id = $1;`,
+     LEFT JOIN column_tasks t ON (c.id = t."columnId")
+     WHERE b.id = $1
+     GROUP BY b.id;`,
     [id],
   );
 
@@ -250,12 +266,26 @@ const editColumn = async (
   return res.rows[0];
 };
 
+const getAllTasks = async (boardId: string, columnId: string): Promise<ITask[]> => {
+  const res = await dbQuery(
+    `SELECT *
+     FROM tasks
+     WHERE "boardId" = $1 and "columnId" = $2
+     ORDER BY "order" ASC;`,
+    [boardId, columnId],
+  );
+
+  return res.rows;
+};
+
 const createTask = async (
   boardId: string,
   columnId: string,
   userId: string,
-  { title, order, description }: ITaskRequest,
+  { title, description }: ITaskRequest,
 ): Promise<ITask> => {
+  const tasks = await getAllTasks(boardId, columnId);
+  const order = tasks.length + 1;
   const res = await dbQuery(
     `INSERT INTO tasks ("boardId", "columnId", "userId", title, "order", description)
      VALUES ($1, $2, $3, $4, $5, $6)
@@ -264,17 +294,6 @@ const createTask = async (
   );
 
   return res.rows[0];
-};
-
-const getAllTasks = async (boardId: string, columnId: string): Promise<ITask[]> => {
-  const res = await dbQuery(
-    `SELECT *
-     FROM tasks
-     WHERE "boardId" = $1 and "columnId" = $2;`,
-    [boardId, columnId],
-  );
-
-  return res.rows;
 };
 
 const findTaskById = async (boardId: string, columnId: string, taskId: string): Promise<IColumnData> => {
@@ -291,6 +310,49 @@ const findTaskById = async (boardId: string, columnId: string, taskId: string): 
      LEFT JOIN task_files f ON (t.id = f."taskId")
      WHERE t."boardId" = $1 AND t."columnId" = $2 AND t.id = $3;`,
     [boardId, columnId, taskId],
+  );
+
+  return res.rows[0];
+};
+
+const deleteTask = async (boardId: string, columnId: string, taskId: string) => {
+  await dbQuery(
+    `DELETE
+     FROM tasks
+     WHERE "boardId" = $1 AND "columnId" = $2 AND id = $3;`,
+    [boardId, columnId, taskId],
+  );
+};
+
+const editTask = async (
+  oldBoardId: string,
+  oldColumnId: string,
+  taskId: string,
+  { title, order, description, userId, columnId, boardId }: Omit<ITask, 'id'>,
+): Promise<ITask> => {
+  const tasks = await getAllTasks(boardId, columnId);
+  // TODO: add proper task ordering
+  tasks.forEach((task) => {
+    if (task.order >= order) task.order += 1;
+    return task;
+  });
+
+  tasks.forEach((task) => {
+    if (task.order < order) task.order -= 1;
+    return task;
+  });
+
+  const res = await dbQuery(
+    `UPDATE tasks
+     SET title = $4, 
+         "order" = $5,
+         description = $6,
+         "userId" = $7,
+         "columnId" = $8,
+         "boardId" = $9
+     WHERE "boardId" = $1 AND "columnId" = $2 AND id = $3
+     RETURNING *;`,
+    [oldBoardId, oldColumnId, taskId, title, order.toString(), description, userId, columnId, boardId],
   );
 
   return res.rows[0];
@@ -318,4 +380,6 @@ export {
   createTask,
   getAllTasks,
   findTaskById,
+  deleteTask,
+  editTask,
 };
