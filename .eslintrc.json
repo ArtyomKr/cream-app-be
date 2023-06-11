@@ -21,6 +21,7 @@
     "dist"
   ],
   "rules": {
+    "no-param-reassign": ["error", { "props": false }],
     "node/no-unsupported-features/es-syntax": "off",
     "@typescript-eslint/consistent-type-definitions": "warn",
     "node/no-missing-import": [
