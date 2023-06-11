@@ -1,8 +1,8 @@
 import express from 'express';
 import auth from '../../middleware/auth';
 import errorConstructor from '../../utils/errorConstructor';
-import isTaskRequestBody from './typeGuards';
-import { createTask, findTaskById, getAllTasks } from '../../db';
+import { isTaskRequestBody, isTaskEditRequestBody } from './typeGuards';
+import { createTask, deleteTask, editTask, findTaskById, getAllTasks } from '../../db';
 
 const tasksRouter = express.Router();
 
@@ -45,6 +45,37 @@ tasksRouter.get('/boards/:boardId/columns/:columnId/tasks/:taskId', auth, async 
     const task = await findTaskById(boardId, columnId, taskId);
 
     res.status(201).json(task);
+  } catch (err) {
+    const status = 400;
+    res.status(status).json(errorConstructor({ status, err }));
+  }
+});
+
+tasksRouter.delete('/boards/:boardId/columns/:columnId/tasks/:taskId', auth, async (req, res) => {
+  const { boardId, columnId, taskId } = req.params;
+
+  try {
+    await deleteTask(boardId, columnId, taskId);
+    res.status(204).send();
+  } catch (err) {
+    const status = 404;
+    res.status(status).json(errorConstructor({ status, err }));
+  }
+});
+
+tasksRouter.put('/boards/:boardId/columns/:columnId/tasks/:taskId', auth, async (req, res) => {
+  if (!isTaskEditRequestBody(req.body)) {
+    const status = 400;
+    res.status(status).json(errorConstructor({ status, message: 'Invalid request body' }));
+    return;
+  }
+
+  const { boardId, columnId, taskId } = req.params;
+
+  try {
+    const updatedTask = await editTask(boardId, columnId, taskId, req.body);
+
+    res.status(201).json(updatedTask);
   } catch (err) {
     const status = 400;
     res.status(status).json(errorConstructor({ status, err }));
