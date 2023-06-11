@@ -29,7 +29,7 @@ interface ITask {
   columnId: string;
 }
 
-interface ITaskRequest extends Omit<ITask, 'id' | 'boardId' | 'columnId' | 'userId'> {
+interface ITaskRequest extends Omit<ITask, 'id' | 'order' | 'boardId' | 'columnId' | 'userId'> {
   userId?: string;
 }
 
