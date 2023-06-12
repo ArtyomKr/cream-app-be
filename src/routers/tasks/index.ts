@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../../middleware/auth';
 import errorConstructor from '../../utils/errorConstructor';
 import { isTaskRequestBody, isTaskEditRequestBody } from './typeGuards';
-import { createTask, deleteTask, editTask, findTaskById, getAllTasks } from '../../db';
+import { createTask, deleteTask, editTask, findTaskById, getAllTasks } from './dbRequests';
 
 const tasksRouter = express.Router();
 
@@ -75,7 +75,7 @@ tasksRouter.put('/boards/:boardId/columns/:columnId/tasks/:taskId', auth, async 
   try {
     const updatedTask = await editTask(boardId, columnId, taskId, req.body);
 
-    res.status(201).json(updatedTask);
+    res.status(200).json(updatedTask);
   } catch (err) {
     const status = 400;
     res.status(status).json(errorConstructor({ status, err }));

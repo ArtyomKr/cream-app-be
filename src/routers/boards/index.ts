@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../../middleware/auth';
 import isBoardRequestBody from './typeGuards';
 import errorConstructor from '../../utils/errorConstructor';
-import { createBoard, deleteBoard, editBoard, findBoardById, getAllBoards } from '../../db';
+import { createBoard, deleteBoard, editBoard, findBoardById, getAllBoards } from './dbRequests';
 
 const boardsRouter = express.Router();
 

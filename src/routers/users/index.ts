@@ -1,6 +1,6 @@
 import express from 'express';
 import auth from '../../middleware/auth';
-import { deleteUser, editUser, findUserById, getAllUsers } from '../../db';
+import { deleteUser, editUser, findUserById, getAllUsers } from './dbRequests';
 import errorConstructor from '../../utils/errorConstructor';
 import { isSignupBody } from '../auth/typeGuards';
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import { isSigninBody, isSignupBody } from './typeGuards';
-import { createUser, findUserByLogin } from '../../db';
+import { createUser, findUserByLogin } from './dbRequests';
 import errorConstructor from '../../utils/errorConstructor';
 import generateToken from '../../utils/generateToken';
 
@@ -39,7 +39,7 @@ authRouter.post('/signin', async (req, res) => {
 
     if (!user || password !== user.password) {
       const status = 403;
-      res.status(status).send(errorConstructor({ status, message: 'User not found' }));
+      res.status(status).send(errorConstructor({ status, message: 'User was not found' }));
     } else res.status(200).json({ token: generateToken(user.id, login) });
   } catch (err) {
     const status = 400;
