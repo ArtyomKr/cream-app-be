@@ -9,10 +9,6 @@ interface ISignInRequest {
   password: string;
 }
 
-interface ISignInResponse {
-  token: string;
-}
-
 interface IUserData {
   id: string;
   name: string;
@@ -36,7 +32,7 @@ interface ITaskRequest extends Omit<ITask, 'id' | 'order' | 'boardId' | 'columnI
 interface IColumn {
   id: string;
   title: string;
-  order: number;
+  order?: number;
 }
 
 interface IColumnFiles {
@@ -72,7 +68,6 @@ interface IDBModel {
 export type {
   ISignUpRequest,
   ISignInRequest,
-  ISignInResponse,
   IDBModel,
   IUserData,
   IBoardRequest,

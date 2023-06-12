@@ -2,7 +2,7 @@ import express from 'express';
 import auth from '../../middleware/auth';
 import errorConstructor from '../../utils/errorConstructor';
 import isColumnRequestBody from './typeGuards';
-import { createColumn, deleteColumn, editColumn, findColumnById, getAllColumns } from '../../db';
+import { createColumn, deleteColumn, editColumn, findColumnById, getAllColumns } from './dbRequests';
 
 const columnsRouter = express.Router();
 
@@ -13,10 +13,10 @@ columnsRouter.post('/boards/:id/columns', auth, async (req, res) => {
     return;
   }
 
-  const { title, order } = req.body;
+  const { title } = req.body;
 
   try {
-    const newColumn = await createColumn(req.params.id, title, order);
+    const newColumn = await createColumn(req.params.id, title);
 
     res.status(201).json(newColumn);
   } catch (err) {
@@ -78,7 +78,7 @@ columnsRouter.put('/boards/:boardId/columns/:columnId', auth, async (req, res) =
   try {
     const updatedColumn = await editColumn(boardId, columnId, req.body);
 
-    res.status(201).json(updatedColumn);
+    res.status(200).json(updatedColumn);
   } catch (err) {
     const status = 400;
     res.status(status).json(errorConstructor({ status, err }));

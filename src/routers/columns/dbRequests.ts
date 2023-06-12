@@ -67,7 +67,7 @@ const editColumn = async (
          "order" = $4
      WHERE "boardId" = $1 AND id = $2
      RETURNING id, title, "order";`,
-    [boardId, columnId, title, order.toString()],
+    [boardId, columnId, title, (order ?? 1).toString()],
   );
 
   return res.rows[0];
