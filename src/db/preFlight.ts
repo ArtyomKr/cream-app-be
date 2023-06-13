@@ -7,7 +7,7 @@ const createTables = async () =>
        "id" uuid DEFAULT uuid_generate_v4(), 
        "name" VARCHAR (50) NOT NULL, 
        "login" VARCHAR (50) UNIQUE NOT NULL, 
-       "password" VARCHAR (25) NOT NULL,
+       "password" VARCHAR NOT NULL,
        PRIMARY KEY ("id")
      );
      CREATE TABLE IF NOT EXISTS "boards" (
