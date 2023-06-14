@@ -4,11 +4,12 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "start": "tsc && node dist/app.js",
+    "start": "node dist/app.js",
     "start-dev": "tsc-watch --onSuccess \"node dist/app.js\"",
     "lint": "eslint .",
     "format": "eslint . --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
