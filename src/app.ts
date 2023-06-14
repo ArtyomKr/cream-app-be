@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { usersRouter, authRouter, boardsRouter, columnsRouter, tasksRouter } from './routers';
@@ -19,7 +19,7 @@ app.use(boardsRouter);
 app.use(columnsRouter);
 app.use(tasksRouter);
 
-app.use((err: Error, req: Request, res: Response) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   const status = 500;
   res.status(status).json(errorConstructor({ status, err }));
 });
