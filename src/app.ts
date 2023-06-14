@@ -1,15 +1,11 @@
 import * as dotenv from 'dotenv';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { usersRouter, authRouter, boardsRouter, columnsRouter, tasksRouter } from './routers';
-import { createColumnsTrigger, createTables, createTasksTrigger } from './db/preFlight';
+import errorConstructor from './utils/errorConstructor';
 
 dotenv.config();
-
-createTables()
-  .then(() => createColumnsTrigger())
-  .then(() => createTasksTrigger());
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +18,11 @@ app.use(authRouter);
 app.use(boardsRouter);
 app.use(columnsRouter);
 app.use(tasksRouter);
+
+app.use((err: Error, req: Request, res: Response) => {
+  const status = 500;
+  res.status(status).json(errorConstructor({ status, err }));
+});
 
 app.listen(port, () => {
   return console.log(`Express is listening at the following port: ${port}`);
