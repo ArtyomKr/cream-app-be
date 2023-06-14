@@ -74,7 +74,7 @@ const createColumnsTrigger = async () =>
     END;
     $$ LANGUAGE plpgsql;
 
-    CREATE OR REPLACE TRIGGER update_order_columns_trigger
+    CREATE TRIGGER IF NOT EXISTS update_order_columns_trigger
     AFTER INSERT OR UPDATE OR DELETE ON columns
     FOR EACH ROW
     WHEN (pg_trigger_depth() = 0)
@@ -108,7 +108,7 @@ const createTasksTrigger = async () =>
     END;
     $$ LANGUAGE plpgsql;
     
-    CREATE OR REPLACE TRIGGER update_order_tasks_trigger
+    CREATE TRIGGER IF NOT EXISTS update_order_tasks_trigger
     AFTER INSERT OR UPDATE OR DELETE ON tasks
     FOR EACH ROW
     WHEN (pg_trigger_depth() = 0)
